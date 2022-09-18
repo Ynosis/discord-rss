@@ -20,37 +20,6 @@ config_file = ConfigParser()
 config_file.read(configuration_file_path)
 # this one is logging of moniotring status only
 status_messages = Webhook.from_url(config.EDEN_CLUB_BOT_STATUS, adapter=RequestsWebhookAdapter())
-private_sector_feed = Webhook.from_url(config.EDEN_CLUB_CTI_PRIVATE_SECTOR, adapter=RequestsWebhookAdapter())
-government_feed = Webhook.from_url(config.EDEN_CLUB_CTI_PUBLIC_SECTOR, adapter=RequestsWebhookAdapter())
-ransomware_feed = Webhook.from_url(config.EDEN_CLUB_CTI_RANSOMWARE, adapter=RequestsWebhookAdapter())
-# put the discord hook url to the channel you want to receive feeds in here
-telegram_feed = Webhook.from_url(config.EDEN_CLUB_TG_FEED, adapter=RequestsWebhookAdapter())
-reuters_feed = Webhook.from_url(config.EDEN_CLUB_MARKINT_FEED, adapter=RequestsWebhookAdapter())
-
-FeedTypes = Enum("FeedTypes", "RSS JSON")
-
-source_details = {
-    "Private RSS Feed": {
-        "source": config.cti_private_rss_feed_list,
-        "hook": private_sector_feed,
-        "type": FeedTypes.RSS,
-    },
-    "Gov RSS Feed": {
-        "source": config.cti_gov_rss_feed_list,
-        "hook": government_feed,
-        "type": FeedTypes.RSS,
-    },
-    "Ransomware News": {
-        "source": "https://raw.githubusercontent.com/joshhighet/ransomwatch/main/posts.json",
-        "hook": ransomware_feed,
-        "type": FeedTypes.JSON,
-    },
-    "Reuters MARKINT": {
-        "source": config.reuters_rss_feed_list,
-        "hook": reuters_feed,
-        "type": FeedTypes.RSS
-    }
-}
 
 def get_ransomware_news(source):
     posts = requests.get(source).json()
