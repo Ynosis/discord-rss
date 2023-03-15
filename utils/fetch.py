@@ -3,23 +3,27 @@ import os
 import time
 from configparser import ConfigParser, NoOptionError
 import sys
-import config
-import Formatting
+import utils.feeds as feeds
+import utils.format as format
 import requests
 
 from discord import Webhook, RequestsWebhookAdapter
 import feedparser
+import utils.feeds as feeds
 from enum import Enum
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # expects the configuration file in the same directory as this script by default, replace if desired otherwise
 configuration_file_path = os.path.join(
-    os.path.split(os.path.abspath(__file__))[0], "Config.txt"
+    os.path.split(os.path.abspath(__file__))[0], "../Config.txt"
 )
 
 config_file = ConfigParser()
 config_file.read(configuration_file_path)
 # this one is logging of moniotring status only
-status_messages = Webhook.from_url(config.EDEN_CLUB_BOT_STATUS, adapter=RequestsWebhookAdapter())
+status_messages = Webhook.from_url(os.getenv("STATUS_WEBHOOK"), adapter=RequestsWebhookAdapter())
 
 def get_ransomware_news(source):
     posts = requests.get(source).json()
@@ -67,7 +71,7 @@ def proccess_articles(articles):
             if config_entry >= article["publish_date"]:
                 continue
 
-        messages.append(Formatting.format_single_article(article))
+        messages.append(format.format_single_article(article))
         new_articles.append(article)
 
     return messages, new_articles
